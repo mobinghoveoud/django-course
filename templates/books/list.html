@@ -15,9 +15,9 @@
                     <div class="card">
                         <div class="card-body">
                             <h5>{{ book.title }}</h5>
-                            <p>{{ book.description }}</p>
+                            <p>{{ book.author }}</p>
                             <p>{{ book.publication_date }}</p>
-                            <a href="#" class="btn btn-primary">Details</a>
+                            <a href="{% url 'books:detail' book.id %}" class="btn btn-primary">Details</a>
                         </div>
                     </div>
                 </div>
