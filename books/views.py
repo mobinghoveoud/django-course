@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
-from books.models import Book
+from books.forms import AuthorCreateForm, BookCreateForm
+from books.models import Author, Book
 
 
 def books_list(request):
@@ -22,3 +23,32 @@ def delete(request, book_id):
     messages.success(request, f"Book '{book.title}' deleted successfully.", extra_tags="alert alert-success")
 
     return redirect("books:list")
+
+
+def create_author(request):
+    if request.method == "POST":
+        form = AuthorCreateForm(request.POST)
+        # Validation
+        if form.is_valid():
+            Author.objects.create(name=form.cleaned_data["name"], bio=form.cleaned_data["bio"])
+
+            messages.success(request, f"Author '{form.cleaned_data['name']}' created successfully.",
+                             extra_tags="alert alert-success")
+    else:
+        form = AuthorCreateForm()
+
+    return render(request, "authors/create.html", {"form": form})
+
+
+def create_book(request):
+    if request.method == "POST":
+        form = BookCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f"Book '{form.cleaned_data['title']}' created successfully.",
+                             extra_tags="alert alert-success")
+    else:
+        form = BookCreateForm()
+
+    return render(request, "books/create.html", {"form": form})
