@@ -2,19 +2,19 @@
 
 
 {% block title %}
-    Book Create
+    Book Update
 {% endblock %}
 
 
 {% block content %}
     <div class="container">
-        <h3>Create Book</h3>
+        <h3>Update Book</h3>
 
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
 
-            <input class="btn btn-primary" type="submit" value="Create">
+            <input class="btn btn-primary" type="submit" value="Update">
         </form>
     </div>
 {% endblock %}

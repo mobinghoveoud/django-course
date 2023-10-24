@@ -19,6 +19,7 @@
                             <p>{{ book.author }}</p>
                             <p>{{ book.price }} Toman</p>
                             <p>{{ book.publication_date|date:"d F, Y" }}</p>
+                            <a href="{% url 'books:update-book' book.id %}" class="btn btn-primary">Update</a>
                             <a href="{% url 'books:detail' book.id %}" class="btn btn-primary">Details</a>
                             <a href="{% url 'books:delete' book.id %}" class="btn btn-danger">Delete</a>
                         </div>
