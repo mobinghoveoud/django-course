@@ -10,7 +10,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, verbose_name="Name")
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.TextField()
