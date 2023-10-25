@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 
 
@@ -9,13 +11,20 @@ class Author(models.Model):
         return self.name
 
 
+def book_path(instance, filename):
+    name = uuid4().hex
+    ext = filename.split(".")[-1]
+
+    return f"books/{instance.author.id}/{name}.{ext}"
+
+
 class Book(models.Model):
     title = models.CharField(max_length=200, verbose_name="Name")
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.TextField()
     publication_date = models.DateField()
-    cover = models.ImageField(upload_to="books/")
+    cover = models.ImageField(upload_to=book_path)
 
     def __str__(self):
         return self.title
