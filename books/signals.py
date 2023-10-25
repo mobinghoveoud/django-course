@@ -6,7 +6,7 @@ from books.models import Book
 
 @receiver(post_delete, sender=Book)
 def auto_delete_book_cover_on_delete(sender, instance, **kwargs):
-    instance.cover.delete()
+    instance.cover.delete(save=False)
 
 
 @receiver(pre_save, sender=Book)
@@ -17,4 +17,4 @@ def auto_delete_book_cover_pre_save(sender, instance, **kwargs):
     book = Book.objects.get(pk=instance.id)
 
     if instance.cover != book.cover:
-        book.cover.delete()
+        book.cover.delete(save=False)
