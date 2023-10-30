@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as django_login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
+from django.views import View
 
 from users.forms import UserCreationForm, UserLoginForm
 
@@ -47,8 +49,17 @@ def login(request):
     return render(request, "users/login.html", {"form": form})
 
 
-def user_logout(request):
-    logout(request)
+# def user_logout(request):
+#     logout(request)
+#
+#     messages.success(request, "Logged out successfully.", extra_tags="alert alert-success")
+#     return redirect("books:list")
 
-    messages.success(request, "Logged out successfully.", extra_tags="alert alert-success")
-    return redirect("books:list")
+class UserLogoutView(LoginRequiredMixin, View):
+    # login_url = "/users/login/"
+
+    def get(self, request):
+        logout(request)
+
+        messages.success(request, "Logged out successfully.", extra_tags="alert alert-success")
+        return redirect("books:list")

@@ -3,9 +3,9 @@ from django import forms
 from books.models import Book
 
 
-class AuthorCreateForm(forms.Form):
-    name = forms.CharField()
-    bio = forms.CharField(widget=forms.Textarea)
+# class AuthorCreateForm(forms.Form):
+#     name = forms.CharField()
+#     bio = forms.CharField(widget=forms.Textarea)
 
 
 class BookCreateForm(forms.ModelForm):
