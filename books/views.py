@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
-from books.forms import BookCreateForm
+from books.forms import BookCreateForm, BookCreateWithAuthorForm
 from books.models import Book
 
 
@@ -75,11 +75,31 @@ class BookCreateView(View):
     template_name = "books/create.html"
 
     def get(self, request):
-        form = self.form_class()
+        form = self.form_class(initial={"title": "Book", "price": 100000})
         return render(request, self.template_name, {"form": form})
 
     def post(self, request):
         form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, f"Book '{form.cleaned_data['title']}' created successfully.",
+                             extra_tags="alert alert-success")
+
+        return render(request, self.template_name, {"form": form})
+
+
+class BookCreateWithAuthorView(LoginRequiredMixin, View):
+    form_class = BookCreateWithAuthorForm
+    template_name = "books/create.html"
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES, author=request.user)
 
         if form.is_valid():
             form.save()

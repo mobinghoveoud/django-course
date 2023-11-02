@@ -29,3 +29,17 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            book = Book.objects.get(pk=self.pk)
+
+            if self.cover != book.cover:
+                book.cover.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
+        self.cover.delete(save=False)
