@@ -31,12 +31,34 @@ class BookDetailView(View):
         return render(request, "books/detail.html", {"book": book})
 
 
-def delete(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
-    book.delete()
-    messages.success(request, f"Book '{book.title}' deleted successfully.", extra_tags="alert alert-success")
+# def delete(request, book_id):
+#     book = get_object_or_404(Book, pk=book_id)
+#     book.delete()
+#     messages.success(request, f"Book '{book.title}' deleted successfully.", extra_tags="alert alert-success")
+#
+#     return redirect("books:list")
 
-    return redirect("books:list")
+class BookDeleteView(LoginRequiredMixin, View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.book = None
+
+    def setup(self, request, *args, **kwargs):
+        self.book = get_object_or_404(Book, pk=kwargs["book_id"])
+
+        super().setup(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user != self.book.author and not request.user.is_superuser:
+            return HttpResponse("Not Allowed!", status=401)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, book_id):
+        self.book.delete()
+        messages.success(request, f"Book '{self.book.title}' deleted successfully.", extra_tags="alert alert-success")
+
+        return redirect("books:list")
 
 
 # def create_author(request):
@@ -141,10 +163,10 @@ class BookUpdateView(LoginRequiredMixin, View):
         super().setup(request, *args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user != self.book.author:
+        if request.user != self.book.author and not request.user.is_superuser:
             return HttpResponse("Not Allowed!", status=401)
 
-        super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, book_id):
         form = self.form_class(instance=self.book)
